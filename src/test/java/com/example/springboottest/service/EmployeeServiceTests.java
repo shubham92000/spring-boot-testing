@@ -6,35 +6,44 @@ import com.example.springboottest.service.impl.EmployeeServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.BDDMockito.given;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+@ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTests {
+    @Mock
     private EmployeeRepository employeeRepository;
-    private EmployeeService employeeService;
+
+    @InjectMocks
+    private EmployeeServiceImpl employeeService;
+
+    private Employee employee;
 
     @BeforeEach
     public void setup(){
-        employeeRepository = Mockito.mock(EmployeeRepository.class);
-        employeeService = new EmployeeServiceImpl(employeeRepository);
-    }
-
-    @Test
-    public void givenEmpObj_whenSaveEmp_thenReturnEmpObj(){
-        // given
-        Employee employee = Employee.builder()
+//        employeeRepository = Mockito.mock(EmployeeRepository.class);
+//        employeeService = new EmployeeServiceImpl(employeeRepository);
+        employee = Employee.builder()
                 .id(1L)
                 .firstName("shubham")
                 .lastName("singh")
                 .email("sh@s.com")
                 .build();
+    }
 
-        BDDMockito.given(employeeRepository.findByEmail(employee.getEmail()))
+    @Test
+    public void givenEmpObj_whenSaveEmp_thenReturnEmpObj(){
+        // given
+        given(employeeRepository.findByEmail(employee.getEmail()))
                 .willReturn(Optional.empty());
 
-        BDDMockito.given(employeeRepository.save(employee))
+        given(employeeRepository.save(employee))
                 .willReturn(employee);
 
         // when
